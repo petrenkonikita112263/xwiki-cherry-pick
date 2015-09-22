@@ -7,9 +7,7 @@ import git
 #####################
 ## GLOBALS
 #####################
-home       = os.path.expanduser("~")
-sources    = home    + "/xwiki"
-work_dir   = sources + "/backports"
+work_dir   = os.path.expanduser("~") + "/xwiki/backports"
 projects   = {
   'commons'    : 'git@github.com:xwiki/xwiki-commons.git',
   'rendering'  : 'git@github.com:xwiki/xwiki-rendering.git',
@@ -129,5 +127,5 @@ print "-"*60
 ## Push the new commit
 ##  
 print "* Push the commit to [%s]" % projects[project_name]
-#remote.push()
+remote.push()
 print "Done."
