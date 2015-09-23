@@ -18,26 +18,56 @@ projects   = {
 ## HELP
 #####################
 def print_help():
-  print """[Usage] xwiki-cherry-pick project branch commit.
+  print """[Usage] xwiki-cherry-pick [project] branch [commit].
 Where: 
-* project is the name of the project (e.g. platform)
+* project is the name of the project (e.g. platform). If not specified, the script will try to guess from the repository
+of the current folder. If specified, the commit id must be specified too.
 * branch is the name of the branch on which the cherry-pick should be done (e.g. stable-7.2.x)
-* commit is the id of the commit (e.g. 363229743aa5a209e6e4c34ffa4a241b1ddc5a24)"""
+* commit is the id of the commit (e.g. 363229743aa5a209e6e4c34ffa4a241b1ddc5a24). If not specified, the script will take
+the last commit of the repository of the current folder. If specified, the project must be specified too."""
 #####################
-## ASSERTS
+## GET ACTIVE REPOSITORY
 #####################
-if len(sys.argv) < 4:
-  print "[Error] Missing arguments."
-  print_help()
+def get_active_repository():
+  path = os.getcwd()
+  while not os.path.exists(path + "/.git") and path != "/":
+    path = os.path.dirname(path)
+  if path == "/":
+    print "[Error] There is not git repository in the current directory."
+    sys.exit(1)
+  return git.Repo(path)
+#####################
+## GET ACTIVE PROJECT
+#####################
+def get_active_project(active_repo):
+  project_url = active_repo.git().config("--get", "remote.origin.url")
+  for project in projects:
+    if projects[project] == project_url:
+      return project
+  print "[Error] The current working directory is not a valid project."
   sys.exit(1)
-if sys.argv[1] not in projects.keys():
-  print "[Error] The project [%s] is not defined. Possible values are [%s]" % (sys.argv[1], ', '.join(projects.keys()))
 #####################
 ## CONTROLLER
 #####################
-project_name = sys.argv[1]
-branch_name  = sys.argv[2]
-commit_id    = sys.argv[3]
+project_name = None
+branch_name  = None
+commit_id    = None
+if len(sys.argv) == 2:
+  branch_name  = sys.argv[1]
+  active_repo  = get_active_repository()
+  project_name = get_active_project(active_repo)
+  commit_id    = active_repo.head.ref.commit.hexsha
+  print "* The script is going to cherry-pick the commit [%s] from the project [%s] to the branch [%s]." % (commit_id, project_name, branch_name)
+elif len(sys.argv) == 4:
+  project_name = sys.argv[1]
+  branch_name  = sys.argv[2]
+  commit_id    = sys.argv[3]  
+  if project_name not in projects.keys():
+    print "[Error] The project [%s] is not defined. Possible values are [%s]" % (project_name, ', '.join(projects.keys()))
+else:
+  print "[Error] Missing arguments."
+  print_help()
+  sys.exit(1)
 #####################
 ## REMOTE PROGRESS
 #####################
@@ -50,7 +80,7 @@ class MyProgressPrinter(git.RemoteProgress):
     elif op_code == git.RemoteProgress.RECEIVING:
       sys.stdout.write("Receiving %d/%d (%d%s)%s\r" % (cur_count, max_count, int(cur_count / max_count * 100.0), '%', message))
       sys.stdout.flush()
-    elif op_code == git.RemoteProgress.RESOLVING:
+    elif op_code == git.RemoteProgress.RESOLVING and self.phase != op_code:
       sys.stdout.write("\n")
       print "Resolving..."
     self.phase = op_code
@@ -126,6 +156,10 @@ print "-"*60
 ##
 ## Push the new commit
 ##  
-print "* Push the commit to [%s]" % projects[project_name]
-remote.push()
-print "Done."
+push = raw_input("Do you want to push? (y/n) ")
+if push == "y":
+  print "* Push the commit to [%s]" % projects[project_name]
+  remote.push()
+  print "Done."
+else:
+  print "Exit."
