@@ -18,6 +18,10 @@ In XWiki, I often need to cherry-pick a commit from the master branch to a stabl
 
 From time to time, I do some mistakes during this process. So to avoid this problem, and to make the cherry-pick operations easier to do, I have created this script.
 
+Finally, if you had to remember one thing only, it allows you to backport a commit to any branch without touching anything on your current working directory.
+
+Note: you need to push the commit to the remote repository (if it is not already there) before processing.
+
 Configuration
 -----
 You should edit `xwiki-cherry-pick.py` and look in the "Globals" section. Here, you can define `workdir` which is the place where this script clones the repostories and does its job. By default, the value is `~/xwiki/backports`. You should keep the directory and not remove it to make future cherry-picks quicker.
