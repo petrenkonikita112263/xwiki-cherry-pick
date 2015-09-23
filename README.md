@@ -20,8 +20,6 @@ From time to time, I do some mistakes during this process. So to avoid this prob
 
 Finally, if you had to remember one thing only, it allows you to backport a commit to any branch without touching anything on your current working directory.
 
-Note: you need to push the commit to the remote repository (if it is not already there) before processing.
-
 Configuration
 -----
 You should edit `xwiki-cherry-pick.py` and look in the "Globals" section. Here, you can define `workdir` which is the place where this script clones the repostories and does its job. By default, the value is `~/xwiki/backports`. You should keep the directory and not remove it to make future cherry-picks quicker.
@@ -53,6 +51,8 @@ of the current folder. If specified, the commit id must be specified too.
 * `branch` is the name of the branch on which the cherry-pick should be done (e.g. `stable-7.2.x`).
 * `commit` is the id of the commit (e.g. `363229743aa5a209e6e4c34ffa4a241b1ddc5a24`). If not specified, the script will take
 the last commit of the repository of the current folder. If specified, the project must be specified too.
+
+Note: you need to push the commit to the remote repository (if it is not already there) before processing.
 
 ToDo
 -----
