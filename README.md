@@ -20,7 +20,7 @@ From time to time, I do some mistakes during this process. So to avoid this prob
 
 Configuration
 -----
-You should edit `xwiki-cherry-pick.py` and look in the "Globals" section. Here, you can define `workdir` which is the place where the git work directory is located. By default, the value is `~/xwiki/backports`. You should keep the directory and not remove it to make future cherry-picks quicker.
+You should edit `xwiki-cherry-pick.py` and look in the "Globals" section. Here, you can define `workdir` which is the place where this script clones the repostories and does its job. By default, the value is `~/xwiki/backports`. You should keep the directory and not remove it to make future cherry-picks quicker.
 
 Installation
 -----
