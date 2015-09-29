@@ -127,8 +127,9 @@ remote.fetch(progress=MyProgressPrinter())
 ## Verify there is a branch
 ##
 if branch_name not in repo.branches:
-  print "* Create the branch [%s]" % branch_name
-  repo.create_head(branch_name, remote.refs[branch_name]).set_tracking_branch(remote.refs[branch_name])
+  print "* Create the branch [%s] locally" % branch_name
+  repo.git().checkout("origin/" + branch_name)
+  repo.git().checkout("-b", branch_name)
 ##
 ## Switch to this branch
 ##
@@ -139,7 +140,7 @@ if repo.active_branch != branch_name:
 ## Pull the last changes
 ##
 print "* Pull the last changes on the branch [%s]" % branch_name
-remote.pull(progress=MyProgressPrinter())
+repo.git().pull("--rebase", "origin", branch_name)
 ##
 ## Perform the cherry-pick
 ##
@@ -159,7 +160,8 @@ print "-"*60
 push = raw_input("Do you want to push? (y/n) ")
 if push == "y":
   print "* Push the commit to [%s]" % projects[project_name]
-  remote.push()
+  ## It seems remote.push() pushes everything, but we only want to push the branch
+  repo.git().push("origin", branch_name)
   print "Done."
 else:
   print "Exit."
