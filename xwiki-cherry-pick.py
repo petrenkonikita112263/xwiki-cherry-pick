@@ -157,7 +157,7 @@ print("-"*60)
 ##
 ## Push the new commit
 ##  
-push = raw_input("Do you want to push? (y/n) ")
+push = input("Do you want to push? (y/n) ").lower()
 if push == "y":
   print(f"* Push the commit to {projects[project_name]}")
   ## It seems remote.push() pushes everything, but we only want to push the branch
