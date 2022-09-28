@@ -4,6 +4,7 @@
 import sys
 import os
 import git
+from pathlib import Path
 #####################
 ## GLOBALS
 #####################
@@ -25,6 +26,17 @@ of the current folder. If specified, the commit id must be specified too.
 * branch is the name of the branch on which the cherry-pick should be done (e.g. stable-7.2.x)
 * commit is the id of the commit (e.g. 363229743aa5a209e6e4c34ffa4a241b1ddc5a24). If not specified, the script will take
 the last commit of the repository of the current folder. If specified, the project must be specified too.""")
+
+
+def rmdir(directory):
+    """Delete folders recursively."""
+    directory = Path(directory)
+    for item in directory.iterdir():
+        if item.is_dir():
+            rmdir(item)
+        else:
+            item.unlink()
+    directory.rmdir()
 #####################
 ## GET ACTIVE REPOSITORY
 #####################
@@ -96,7 +108,7 @@ if not os.path.exists(work_dir):
 ## Same with the project directory
 ##
 project_directory = work_dir + "/" + project_name
-if not os.path.exists(project_directory):
+if not os.path.exists(project_directory) and os.path.isdir(project_directory):
   print("* Create the git working directory")
   os.makedirs(project_directory)
 ##
