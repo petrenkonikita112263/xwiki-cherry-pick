@@ -101,16 +101,8 @@ class MyProgressPrinter(git.RemoteProgress):
 ## Note: we do not use the directory used by the user because if an IDE is open and we checkout a branch, the IDE 
 ## reloads all its indices which is a loud process.
 ##
-if not os.path.exists(work_dir):
-  print("* Create the working directory")
-  os.makedirs(work_dir)
-##
-## Same with the project directory
-##
 project_directory = work_dir + "/" + project_name
-if not os.path.exists(project_directory) and os.path.isdir(project_directory):
-  print("* Create the git working directory")
-  os.makedirs(project_directory)
+Path(project_directory).mkdir(parents=True, exist_ok=True)
 ##
 ## Init the repository if it is not already
 ##
