@@ -7,6 +7,10 @@ import git
 from pathlib import Path
 from utils.progress_printer import MyProgressPrinter
 from utils import print_help
+from utils.manage_directories import (
+    create_directory_with_subdirectories,
+    remove_directory,
+)
 
 #####################
 ## GLOBALS
@@ -18,17 +22,6 @@ projects = {
     "platform": "git@github.com:xwiki/xwiki-platform.git",
     "enterprise": "git@github.com:xwiki/xwiki-enterprise.git",
 }
-
-
-def rmdir(directory):
-    """Delete folders recursively."""
-    directory = Path(directory)
-    for item in directory.iterdir():
-        if item.is_dir():
-            rmdir(item)
-        else:
-            item.unlink()
-    directory.rmdir()
 
 
 #####################
@@ -89,7 +82,7 @@ else:
 ## reloads all its indices which is a loud process.
 ##
 project_directory = work_dir + "/" + project_name
-Path(project_directory).mkdir(parents=True, exist_ok=True)
+create_directory_with_subdirectories(project_directory)
 ##
 ## Init the repository if it is not already
 ##
