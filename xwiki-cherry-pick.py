@@ -5,7 +5,7 @@ import sys
 import os
 import git
 from pathlib import Path
-from utils.print_progress import MyProgressPrinter
+from utils.progress_printer import MyProgressPrinter
 from utils import print_help
 
 #####################
